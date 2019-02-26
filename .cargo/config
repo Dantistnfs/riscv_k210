@@ -1,0 +1,12 @@
+[target.riscv64gc-unknown-none-elf]
+#runner = 'riscv64-unknown-elf-gdb'
+rustflags = [
+  "-C", "linker=riscv64-unknown-elf-gcc",
+  "-C", "link-arg=-Wl,-Tmemory.x",
+  "-C", "link-arg=-Wl,--no-relax",
+  "-C", "link-arg=-nostartfiles",
+  #"-C", "link-arg=--enable-long-section-names",
+]
+
+[build]
+target = "riscv64gc-unknown-none-elf"
