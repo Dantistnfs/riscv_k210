@@ -129,13 +129,16 @@ impl UARTHS {
     #[no_mangle]
     pub fn init(&self) {
         // initialize UART
-        let freq : u32 = 26_000_000; //I am not shure about freq, need to implemt pll registers and read them
-        //let freq: u32 = 320_666_666;
-        let div : u32 = freq / 115200 - 1;
+        //let freq : u32 = 26_000_000; //I am not sure about freq, need to implemt pll registers and read them
+
+        //let freq: u32 = 320_666_666; // around 90% that this is right freq
+        //let div : u32 = freq / 115200 - 1;
+        let div = 3700; //Rs
+        //let div = 1700;
 
         self.div.write(UARTHS_DIV::div.val(div));
         self.txctrl.write(UARTHS_TXCTRL::enable::Enabled);
-        self.rxctrl.write(UARTHS_RXCTRL::enable::Enabled);
+        self.rxctrl.write(UARTHS_RXCTRL::enable::Disabled);
         self.txctrl.write(UARTHS_TXCTRL::cnt.val(0));
         self.rxctrl.write(UARTHS_RXCTRL::cnt.val(0));
         self.ip.write(UARTHS_IEIP::txwm.val(1));
@@ -152,7 +155,8 @@ impl UARTHS {
             }
             unsafe{asm!("nop")};
         }
-        self.txfifo.write(UARTHS_DATA::data.val(c as u32)); //i know, it's very shitty design that will drop all bits over 8
+        self.txfifo.write(UARTHS_DATA::data.val((c as u32))); //i know, it's very shitty design that will drop all bits over 8
+
     }
 
     #[no_mangle]
@@ -177,17 +181,17 @@ global_asm!(include_str!("asm.S"));
 #[link_section = "_main_func"]
 fn main_test() {
     let uart = UARTHS::new();
+
     uart.init();
-    let mut counter : u8 = 0;
     loop {
-        counter+=1;
-        uart.send(counter as char);
         uart.send('R');
-        uart.send('s');
         uart.send('u');
+        uart.send('s');
         uart.send('t');
+        uart.send('!');
         uart.send('\r');
-        uart.send('\n');
+        unsafe{asm!("nop")};
+        //uart.send('\n');
     }
 }
 
