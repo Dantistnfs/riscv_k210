@@ -1,14 +1,8 @@
 This repo is now archived see:
 
 https://github.com/riscv-rust/k210-example for sample of rust code on k210,
+
 https://github.com/riscv-rust/k210-pac for k210 peripheral access crate made by rust-riscv community.
-
-
-
-
-
-
-
 
 
 
